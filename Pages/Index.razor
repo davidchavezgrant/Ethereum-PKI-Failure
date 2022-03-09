@@ -1,0 +1,62 @@
+﻿@page "/"
+@using System.Security.Cryptography.X509Certificates
+@inject IJSRuntime Javascript
+@inject EthereumService Ethereum
+
+@if (!loggedIn)
+{
+    @if (metamaskIsInstalled)
+    {
+        <button @onclick="MetaMaskSignInAsync">Sign In With Metamask</button>
+        <h3 @bind="error"></h3>
+    }
+    else
+    {
+        <h3>Metamask is not installed in this browser</h3>
+    }
+}
+else
+{
+    <h1>Hello @metamaskId!</h1>
+    <input @bind="input"/>
+    <button @onclick="Send">Encrypt Message</button>
+    <h1>Encrypted Text: @encryptedText</h1>
+}
+@code
+{
+    private string error;
+    private string metamaskId;
+    private string input;
+    private bool metamaskIsInstalled;
+    private bool loggedIn;
+    private string encryptedText;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        metamaskIsInstalled = await Javascript.InvokeAsync<bool>("JsLib.metamaskIsInstalled");
+        metamaskIsInstalled = await Javascript.InvokeAsync<bool>("JsLib.metamaskIsInstalled");
+        StateHasChanged();
+    }
+
+    private async Task Send()
+    {
+        var publicKey = Ethereum.RecoverPublicKey(metamaskId);
+        var encrypted = await Javascript.InvokeAsync<EncryptionResult>("JsLib.encryptAsync", publicKey, input);
+    }
+
+    // DTO returned by JS method
+    public record EncryptionResult(string ciphertext, string ephemPublicKey, string nonce, string version);
+
+    private async Task MetaMaskSignInAsync()
+    {
+        try
+        {
+            metamaskId = await Javascript.InvokeAsync<string>("JsLib.loginAsync");
+            loggedIn = true;
+        }
+        catch (Exception)
+        {
+            error = "Could not log in with MetaMask. Is your MetaMask unlocked?";
+        }
+    }
+
+}
