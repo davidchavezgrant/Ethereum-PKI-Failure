@@ -14,9 +14,8 @@ export async function loginAsync()
     return accounts[0];
 }
 
-export async function encryptAsync(publicKey, message)
+export function encryptMessage(publicKey, message)
 {
-
     const encryptedMessage =  encrypt({
         data: message,
         publicKey: publicKey,
@@ -25,9 +24,10 @@ export async function encryptAsync(publicKey, message)
     return encryptedMessage;
 }
 
-export async function Decrypt(payload)
+export async function decryptAsync(payload)
 {
-    let address = await Login();
+    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+    const address = accounts[0];
     const decrypted = await ethereum.request({method: 'eth_decrypt', params: [payload, address]});
     return decrypted;
 }

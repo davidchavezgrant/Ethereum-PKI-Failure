@@ -20,8 +20,10 @@ else
 {
     <h1>Hello @metamaskId!</h1>
     <input @bind="input"/>
-    <button @onclick="Send">Encrypt Message</button>
+    <button @onclick="Encrypt">Encrypt Message</button>
     <h1>Encrypted Text: @encryptedText</h1>
+    <button @onclick="Decrypt">Decrypt Message</button>
+    <h1>Decrypted Text: @decryptedText</h1>
 }
 @code
 {
@@ -31,6 +33,7 @@ else
     private bool metamaskIsInstalled;
     private bool loggedIn;
     private string encryptedText;
+    private string decryptedText;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         metamaskIsInstalled = await Javascript.InvokeAsync<bool>("JsLib.metamaskIsInstalled");
@@ -38,10 +41,16 @@ else
         StateHasChanged();
     }
 
-    private async Task Send()
+    private async Task Encrypt()
     {
         var publicKey = await Ethereum.GetPublicKeyAsync(metamaskId);
-        var encrypted = await Javascript.InvokeAsync<EncryptionResult>("JsLib.encryptAsync", publicKey, input);
+        var result = await Javascript.InvokeAsync<EncryptionResult>("JsLib.encryptMessage", publicKey, input);
+        encryptedText = result.ciphertext;
+    }
+
+    private async Task Decrypt()
+    {
+        decryptedText = await Javascript.InvokeAsync<string>("JsLib.decryptAsync", encryptedText);
     }
 
     // DTO returned by JS method
