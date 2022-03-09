@@ -15,14 +15,14 @@ internal class InfuraClient
 		//Getting the transaction from the chain
 		Transaction? rpcTransaction = await web3.Eth.Transactions.GetTransactionByHash.SendRequestAsync(transactionHash);
 
-		ISignedTransaction? transaction = rpcTransaction.Type.ToTransactionType() switch
-		                                  {
-			                                  TransactionType.Legacy                 => rpcTransaction.ToLegacyTransaction(),
-			                                  TransactionType.LegacyTransaction      => rpcTransaction.ToLegacyTransaction(),
-			                                  TransactionType.LegacyChainTransaction => rpcTransaction.ToLegacyTransaction(),
-			                                  TransactionType.EIP1559                => rpcTransaction.To1559Transaction(),
-			                                  _                                      => throw new ArgumentOutOfRangeException()
-		                                  };
+		ISignedTransaction transaction = rpcTransaction.Type.ToTransactionType() switch
+		                                 {
+			                                 TransactionType.Legacy                 => rpcTransaction.ToLegacyTransaction(),
+			                                 TransactionType.LegacyTransaction      => rpcTransaction.ToLegacyTransaction(),
+			                                 TransactionType.LegacyChainTransaction => rpcTransaction.ToLegacyTransaction(),
+			                                 TransactionType.EIP1559                => rpcTransaction.To1559Transaction(),
+			                                 _                                      => throw new ArgumentOutOfRangeException()
+		                                 };
 
 		return transaction;
 	}

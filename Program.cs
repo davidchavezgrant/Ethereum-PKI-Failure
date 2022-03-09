@@ -1,8 +1,5 @@
-using MetamaskDecryption;
 using MetamaskDecryption.Data;
 using MetamaskDecryption.Data.Etherscan;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
