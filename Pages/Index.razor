@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using System.Security.Cryptography.X509Certificates
+@using MetamaskDecryption.Data
 @inject IJSRuntime Javascript
 @inject EthereumService Ethereum
 
@@ -39,7 +40,7 @@ else
 
     private async Task Send()
     {
-        var publicKey = Ethereum.RecoverPublicKey(metamaskId);
+        var publicKey = await Ethereum.GetPublicKeyAsync(metamaskId);
         var encrypted = await Javascript.InvokeAsync<EncryptionResult>("JsLib.encryptAsync", publicKey, input);
     }
 

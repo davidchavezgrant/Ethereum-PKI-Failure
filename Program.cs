@@ -1,4 +1,6 @@
 using MetamaskDecryption;
+using MetamaskDecryption.Data;
+using MetamaskDecryption.Data.Etherscan;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -8,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<EtherscanClient>();
 builder.Services.AddScoped<EthereumService>();
 
 var app = builder.Build();
